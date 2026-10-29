@@ -1,0 +1,558 @@
+CREATE DATABASE CompanyDB;
+USE CompanyDB;
+
+CREATE TABLE Department (
+    dept_id INT PRIMARY KEY,
+    dept_name VARCHAR(50) NOT NULL,
+    location VARCHAR(50)
+);
+
+CREATE TABLE Project (
+    project_id INT PRIMARY KEY,
+    project_name VARCHAR(100) NOT NULL,
+    budget DECIMAL(12,2)
+);
+
+CREATE TABLE Employee (
+    emp_id INT PRIMARY KEY,
+    emp_name VARCHAR(50) NOT NULL,
+    salary DECIMAL(10,2),
+    dept_id INT,
+    project_id INT,
+    joining_date DATE,
+    FOREIGN KEY (dept_id) REFERENCES Department(dept_id),
+    FOREIGN KEY (project_id) REFERENCES Project(project_id)
+);
+
+INSERT INTO Department VALUES
+(1, 'Software Development', 'Chandigarh'),
+(2, 'Data Science', 'Noida'),
+(3, 'Human Resources', 'Delhi'),
+(4, 'Finance', 'Jaipur'),
+(5, 'Sales and Marketing', 'Pune');
+
+INSERT INTO Project VALUES
+(201, 'Smart Billing System', 1700000),
+(202, 'Online Learning Portal', 2100000),
+(203, 'Data Analytics Tool', 2800000),
+(204, 'Hospital Management', 1900000),
+(205, 'Cloud Security', 2600000),
+(206, 'Mobile Banking App', 2300000),
+(207, 'Sales Prediction', 1400000),
+(208, 'HR Management System', 1100000);
+
+INSERT INTO Employee VALUES
+(1, 'Dev Sharma', 66000, 1, 201, '2023-02-12'),
+(2, 'Nisha Verma', 74000, 1, 202, '2022-04-18'),
+(3, 'Rohan Singh', 59000, 1, 203, '2023-07-10'),
+(4, 'Meera Gupta', 82000, 1, 204, '2021-09-14'),
+(5, 'Yash Mehta', 71000, 1, 205, '2022-12-08'),
+(6, 'Kriti Sharma', 77000, 1, 206, '2023-03-21'),
+
+(7, 'Aman Kapoor', 86000, 2, 201, '2021-05-11'),
+(8, 'Tanya Jain', 93000, 2, 202, '2022-06-16'),
+(9, 'Vivek Malhotra', 79000, 2, 203, '2023-02-25'),
+(10, 'Ira Roy', 89000, 2, 204, '2022-10-19'),
+(11, 'Rajat Gupta', 96000, 2, 205, '2021-11-15'),
+(12, 'Neha Kapoor', 84000, 2, 206, '2023-08-04'),
+
+(13, 'Kunal Kumar', 56000, 3, 208, '2022-03-11'),
+(14, 'Riya Singh', 63000, 3, 208, '2023-04-17'),
+(15, 'Naveen Sharma', 60000, 3, 207, '2022-08-21'),
+(16, 'Pallavi Verma', 68000, 3, 208, '2021-11-07'),
+(17, 'Abhishek Jain', 61000, 3, 207, '2023-06-02'),
+(18, 'Simran Kaur', 65000, 3, 208, '2022-12-14'),
+
+(19, 'Varun Agarwal', 89000, 4, 203, '2021-07-13'),
+(20, 'Mansi Gupta', 77000, 4, 203, '2022-05-27'),
+(21, 'Saurabh Bansal', 92000, 4, 205, '2021-10-20'),
+(22, 'Tina Shah', 73000, 4, 207, '2023-02-05'),
+(23, 'Manav Arora', 85000, 4, 203, '2022-09-16'),
+(24, 'Divya Mehta', 80000, 4, 205, '2023-05-19'),
+
+(25, 'Aakash Yadav', 61000, 5, 207, '2022-02-15'),
+(26, 'Shreya Kapoor', 69000, 5, 207, '2023-03-25'),
+(27, 'Varun Sharma', 75000, 5, 202, '2021-12-10'),
+(28, 'Aditi Singh', 66000, 5, 204, '2022-07-15'),
+(29, 'Harsh Gupta', 72000, 5, 207, '2023-04-01'),
+(30, 'Muskan Jain', 70000, 5, 202, '2022-11-12');
+
+SELECT *
+FROM Employee
+WHERE salary > 80000;
+
+SELECT emp_name, joining_date
+FROM Employee;
+
+SELECT
+    SUM(salary) AS total_salary,
+    AVG(salary) AS average_salary,
+    MAX(salary) AS highest_salary,
+    MIN(salary) AS lowest_salary
+FROM Employee;
+
+SELECT
+    dept_id,
+    COUNT(emp_id) AS employee_count
+FROM Employee
+GROUP BY dept_id;
+
+SELECT
+    d.dept_name,
+    AVG(e.salary) AS average_salary
+FROM Employee e
+INNER JOIN Department d
+ON e.dept_id = d.dept_id
+GROUP BY d.dept_name;
+
+SELECT
+    d.dept_name,
+    AVG(e.salary) AS average_salary
+FROM Employee e
+INNER JOIN Department d
+ON e.dept_id = d.dept_id
+GROUP BY d.dept_name
+HAVING AVG(e.salary) > 72000;
+
+SELECT
+    emp_name,
+    salary,
+    CASE
+        WHEN salary >= 90000 THEN 'Excellent Salary'
+        WHEN salary >= 70000 THEN 'Good Salary'
+        ELSE 'Basic Salary'
+    END AS salary_level
+FROM Employee;
+
+SELECT
+    emp_id,
+    emp_name,
+    salary
+FROM Employee
+ORDER BY salary DESC;
+
+SELECT
+    p.project_name,
+    COUNT(e.emp_id) AS employee_count
+FROM Project p
+LEFT JOIN Employee e
+ON p.project_id = e.project_id
+GROUP BY p.project_name
+ORDER BY employee_count DESC;
+
+SELECT
+    e.emp_name,
+    d.dept_name,
+    p.project_name,
+    e.salary
+FROM Employee e
+INNER JOIN Department d
+ON e.dept_id = d.dept_id
+INNER JOIN Project p
+ON e.project_id = p.project_id
+ORDER BY e.salary DESC;
+
+
+
+
+SELECT
+    e.emp_id,
+    e.emp_name,
+    d.dept_name
+FROM Employee e
+INNER JOIN Department d
+ON e.dept_id = d.dept_id;
+
+SELECT
+    e.emp_id,
+    e.emp_name,
+    p.project_name
+FROM Employee e
+LEFT JOIN Project p
+ON e.project_id = p.project_id;
+
+SELECT
+    e1.emp_name AS First_Employee,
+    e2.emp_name AS Second_Employee,
+    e1.dept_id
+FROM Employee e1
+INNER JOIN Employee e2
+ON e1.dept_id = e2.dept_id
+AND e1.emp_id < e2.emp_id;
+
+SELECT
+    e.emp_name,
+    d.dept_name,
+    p.project_name
+FROM Employee e
+INNER JOIN Department d
+ON e.dept_id = d.dept_id
+INNER JOIN Project p
+ON e.project_id = p.project_id;
+
+SELECT
+    e.emp_id,
+    e.emp_name,
+    e.dept_id,
+    e.salary
+FROM Employee e
+WHERE e.salary > (
+    SELECT AVG(e2.salary)
+    FROM Employee e2
+    WHERE e2.dept_id = e.dept_id
+);
+
+SELECT
+    e.emp_id,
+    e.emp_name
+FROM Employee e
+WHERE EXISTS (
+    SELECT 1
+    FROM Employee e2
+    WHERE e2.emp_id = e.emp_id
+);
+
+SELECT
+    e.emp_id,
+    e.emp_name
+FROM Employee e
+WHERE e.dept_id = 2
+AND EXISTS (
+    SELECT 1
+    FROM Employee e2
+    WHERE e2.emp_id = e.emp_id
+    AND e2.salary > 75000
+);
+
+SELECT
+    e.emp_id,
+    e.emp_name
+FROM Employee e
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM Employee e2
+    WHERE e2.emp_id = e.emp_id
+    AND e2.project_id = 102
+);
+
+EXPLAIN
+SELECT
+    e.emp_name,
+    d.dept_name
+FROM Employee e
+INNER JOIN Department d
+ON e.dept_id = d.dept_id;
+
+EXPLAIN
+SELECT
+    e.emp_name,
+    e.salary
+FROM Employee e
+WHERE e.salary > (
+    SELECT AVG(e2.salary)
+    FROM Employee e2
+    WHERE e2.dept_id = e.dept_id
+);
+
+
+
+CREATE TABLE Department6 (
+    dept_id INT PRIMARY KEY,
+    dept_name VARCHAR(30)
+);
+
+INSERT INTO Department6 VALUES
+(1, 'Development'),
+(2, 'Marketing'),
+(3, 'Accounts');
+
+CREATE TABLE Employee6 (
+    emp_id INT PRIMARY KEY,
+    emp_name VARCHAR(30),
+    dept_id INT,
+    manager_id INT,
+    salary DECIMAL(10,2),
+    FOREIGN KEY (dept_id) REFERENCES Department6(dept_id)
+);
+
+INSERT INTO Employee6 VALUES
+(1, 'Karan', 1, NULL, 80000),
+(2, 'Mehak', 1, 1, 67000),
+(3, 'Rohan', 1, 1, 62000),
+(4, 'Sahil', 2, NULL, 58000),
+(5, 'Anjali', 2, 4, 52000),
+(6, 'Vikas', 3, NULL, 72000),
+(7, 'Poonam', 3, 6, 61000);
+
+CREATE VIEW Dept_Salary_Report AS
+SELECT
+    d.dept_id,
+    d.dept_name,
+    COUNT(e.emp_id) AS employee_count,
+    SUM(e.salary) AS salary_total,
+    AVG(e.salary) AS salary_average
+FROM Department6 d
+LEFT JOIN Employee6 e
+ON d.dept_id = e.dept_id
+GROUP BY d.dept_id, d.dept_name;
+
+SELECT *
+FROM Dept_Salary_Report;
+
+CREATE VIEW Staff_Hierarchy AS
+SELECT
+    e.emp_id,
+    e.emp_name,
+    e.manager_id,
+    m.emp_name AS manager_name,
+    e.dept_id,
+    e.salary
+FROM Employee6 e
+LEFT JOIN Employee6 m
+ON e.manager_id = m.emp_id;
+
+SELECT *
+FROM Staff_Hierarchy;
+
+UPDATE Staff_Hierarchy
+SET salary = 69000
+WHERE emp_id = 2;
+
+SELECT *
+FROM Staff_Hierarchy
+WHERE emp_id = 2;
+
+UPDATE Dept_Salary_Report
+SET salary_average = 75000
+WHERE dept_id = 1;
+
+WITH RECURSIVE StaffChain AS (
+    SELECT
+        emp_id,
+        emp_name,
+        manager_id,
+        0 AS level,
+        CAST(emp_name AS CHAR(200)) AS reporting_path
+    FROM Employee6
+    WHERE manager_id IS NULL
+
+    UNION ALL
+
+    SELECT
+        e.emp_id,
+        e.emp_name,
+        e.manager_id,
+        sc.level + 1,
+        CONCAT(sc.reporting_path, ' -> ', e.emp_name)
+    FROM Employee6 e
+    INNER JOIN StaffChain sc
+    ON e.manager_id = sc.emp_id
+)
+
+SELECT
+    emp_id,
+    emp_name,
+    manager_id,
+    level,
+    reporting_path
+FROM StaffChain
+ORDER BY reporting_path;
+
+WITH RECURSIVE StaffChain AS (
+    SELECT
+        emp_id,
+        emp_name,
+        manager_id,
+        0 AS level
+    FROM Employee6
+    WHERE manager_id IS NULL
+
+    UNION ALL
+
+    SELECT
+        e.emp_id,
+        e.emp_name,
+        e.manager_id,
+        sc.level + 1
+    FROM Employee6 e
+    JOIN StaffChain sc
+    ON e.manager_id = sc.emp_id
+)
+
+SELECT
+    emp_id,
+    emp_name,
+    manager_id,
+    level
+FROM StaffChain
+ORDER BY level, emp_id;
+
+CREATE TABLE Department7 (
+    dept_id INT PRIMARY KEY,
+    dept_name VARCHAR(30)
+);
+
+INSERT INTO Department7 VALUES
+(1, 'Development'),
+(2, 'Human Resource'),
+(3, 'Accounts'),
+(4, 'Marketing');
+
+CREATE TABLE Employee7 (
+    emp_id INT PRIMARY KEY,
+    emp_name VARCHAR(30),
+    dept_id INT,
+    salary DECIMAL(10,2),
+    FOREIGN KEY (dept_id) REFERENCES Department7(dept_id)
+);
+
+INSERT INTO Employee7 VALUES
+(201, 'Aarav', 1, 78000),
+(202, 'Nisha', 1, 68000),
+(203, 'Rohan', 2, 61000),
+(204, 'Meera', 2, 56000),
+(205, 'Kunal', 3, 72000);
+
+CREATE TABLE Employee_Audit7 (
+    audit_id INT AUTO_INCREMENT PRIMARY KEY,
+    emp_id INT,
+    previous_dept INT,
+    updated_dept INT,
+    changed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+DELIMITER //
+
+CREATE TRIGGER check_salary_insert7
+BEFORE INSERT ON Employee7
+FOR EACH ROW
+BEGIN
+    IF NEW.salary <= 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Salary must be greater than zero';
+    END IF;
+END //
+
+DELIMITER ;
+
+DELIMITER //
+
+CREATE TRIGGER check_salary_update7
+BEFORE UPDATE ON Employee7
+FOR EACH ROW
+BEGIN
+    IF NEW.salary <= 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Salary must be greater than zero';
+    END IF;
+END //
+
+DELIMITER ;
+
+DELIMITER //
+
+CREATE TRIGGER department_change_audit7
+AFTER UPDATE ON Employee7
+FOR EACH ROW
+BEGIN
+    IF OLD.dept_id <> NEW.dept_id THEN
+        INSERT INTO Employee_Audit7
+        (emp_id, previous_dept, updated_dept)
+        VALUES
+        (OLD.emp_id, OLD.dept_id, NEW.dept_id);
+    END IF;
+END //
+
+DELIMITER ;
+
+DELIMITER //
+
+CREATE PROCEDURE change_employee_department(
+    IN p_employee_id INT,
+    IN p_department_id INT
+)
+BEGIN
+    DECLARE v_count INT DEFAULT 0;
+
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Error occurred during department transfer';
+    END;
+
+    START TRANSACTION;
+
+    SELECT COUNT(*)
+    INTO v_count
+    FROM Employee7
+    WHERE emp_id = p_employee_id;
+
+    IF v_count = 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Employee does not exist';
+    END IF;
+
+    SELECT COUNT(*)
+    INTO v_count
+    FROM Department7
+    WHERE dept_id = p_department_id;
+
+    IF v_count = 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Department does not exist';
+    END IF;
+
+    UPDATE Employee7
+    SET dept_id = p_department_id
+    WHERE emp_id = p_employee_id;
+
+    COMMIT;
+END //
+
+DELIMITER ;
+
+SELECT *
+FROM Employee7;
+
+CALL change_employee_department(202, 3);
+
+SELECT *
+FROM Employee7
+WHERE emp_id = 202;
+
+SELECT *
+FROM Employee_Audit7;
+
+CALL change_employee_department(999, 2);
+
+CALL change_employee_department(201, 99);
+
+INSERT INTO Employee7
+VALUES (206, 'Dev', 1, -4000);
+
+UPDATE Employee7
+SET salary = -2000
+WHERE emp_id = 201;
+
+UPDATE Employee7
+SET salary = 82000
+WHERE emp_id = 201;
+
+SELECT *
+FROM Employee7
+WHERE emp_id = 201;
+
+CALL change_employee_department(205, 4);
+
+SELECT *
+FROM Employee7
+WHERE emp_id = 205;
+
+SELECT
+    audit_id,
+    emp_id,
+    previous_dept,
+    updated_dept,
+    changed_at
+FROM Employee_Audit7;
